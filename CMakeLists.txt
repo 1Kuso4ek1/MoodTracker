@@ -9,10 +9,10 @@ find_package(Qt6 REQUIRED COMPONENTS Quick ShaderTools)
 qt_standard_project_setup(REQUIRES 6.9)
 
 qt_add_executable(appQmlApp
-    main.cpp
+    src/main.cpp
 )
 
-set_source_files_properties(Navigation.qml
+set_source_files_properties(qml/Navigation.qml
     PROPERTIES
     QT_QML_SINGLETON_TYPE TRUE
 )
@@ -21,8 +21,8 @@ qt_add_qml_module(appQmlApp
     URI QmlApp
     VERSION 1.0
     QML_FILES
-        Main.qml
-        QML_FILES HomePage.qml BlurredBackground.qml NewEntry.qml Navigation.qml
+        qml/Main.qml
+        QML_FILES qml/HomePage.qml qml/BlurredBackground.qml qml/NewEntry.qml qml/Navigation.qml
         RESOURCES resources.qrc
 )
 

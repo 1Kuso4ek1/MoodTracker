@@ -57,7 +57,7 @@ ColumnLayout {
 
             radius: 8
 
-            implicitWidth: 100
+            implicitWidth: 130
             implicitHeight: 50
 
             onClicked: Navigation.pop()
