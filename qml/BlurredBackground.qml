@@ -23,7 +23,7 @@ Rectangle {
         source: blurSource
         blurEnabled: true
         blur: 1.0
-        blurMax: 64
+        blurMax: 32
         anchors.fill: parent
     }
 }

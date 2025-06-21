@@ -8,52 +8,33 @@ ColumnLayout {
     id: root
     spacing: 0
 
-    /*Item {
+    ToolBar {
         Layout.fillWidth: true
-        Layout.preferredHeight: 60
-        z: 10*/
+        Layout.alignment: Qt.AlignTop
+        Layout.preferredHeight: 50
 
-        ToolBar {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-            Layout.preferredHeight: 50
+        z: 10
 
-            z: 10
-
-            background: BlurredBackground {
-                item: listView
-                rect: Qt.rect(-30, -50, listView.width, 50)
-            }
-
-            RowLayout {
-                anchors.fill: parent
-
-                Label {
-                    text: "Главная"
-                    font.pixelSize: 18
-                    font.bold: true
-
-                    Layout.fillWidth: true
-
-                    verticalAlignment: Qt.AlignVCenter
-                    horizontalAlignment: Qt.AlignHCenter
-                }
-            }
-        }
-
-        /*BlurredBackground {
+        background: BlurredBackground {
             item: listView
-            rect: Qt.rect(-30, -60, listView.width, 60)
+            rect: Qt.rect(-25, -50, listView.width + 25, 50)
         }
 
-        Label {
-            anchors.centerIn: parent
+        RowLayout {
+            anchors.fill: parent
 
-            text: "Главная"
-            font.pixelSize: 18
-            font.bold: true
-        }*/
-    //}
+            Label {
+                text: "Главная"
+                font.pixelSize: 18
+                font.bold: true
+
+                Layout.fillWidth: true
+
+                verticalAlignment: Qt.AlignVCenter
+                horizontalAlignment: Qt.AlignHCenter
+            }
+        }
+    }
 
     ListModel {
         id: listModel
@@ -123,7 +104,7 @@ ColumnLayout {
 
         BlurredBackground {
             item: listView
-            rect: Qt.rect(-30, listView.height, listView.width, 100)
+            rect: Qt.rect(-25, listView.height, listView.width + 25, 100)
         }
 
         RoundButton {

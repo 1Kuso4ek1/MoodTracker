@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 ColumnLayout {
@@ -24,7 +25,8 @@ ColumnLayout {
                 font.bold: true
                 flat: true
 
-                width: height
+                width: 60
+                height: 60
 
                 onClicked: Navigation.pop()
 
@@ -45,20 +47,30 @@ ColumnLayout {
         }
     }
 
-    RowLayout {
+    ColumnLayout {
         Layout.fillWidth: true
-        Layout.preferredWidth: parent.width
+        Layout.fillHeight: true
+        Layout.margins: 20
 
-        RoundButton {
+        spacing: 20
+
+        TextArea {
+            id: descriptionField
+
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.preferredHeight: 100
+
+            placeholderText: "Как прошел ваш день?"
+        }
+
+        Button {
             Layout.alignment: Qt.AlignHCenter
 
             text: "Сохранить"
             font.pixelSize: 18
 
-            radius: 8
-
-            implicitWidth: 130
-            implicitHeight: 50
+            //radius: 8
 
             onClicked: Navigation.pop()
         }
