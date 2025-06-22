@@ -36,6 +36,7 @@ ColumnLayout {
 
             Label {
                 text: "Добавить запись"
+
                 font.pixelSize: 18
                 font.bold: true
 
@@ -54,6 +55,65 @@ ColumnLayout {
 
         spacing: 20
 
+        Label {
+            text: "Как ваше настроение?"
+
+            font.pixelSize: 24
+            font.weight: 10
+
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignHCenter
+
+            spacing: 15
+
+            Repeater {
+                id: repeater
+                model: [ "😀", "😐", "😕", "😞", "😠" ]
+                property var selectedIndex: 2
+
+                RoundButton {
+                    id: emojiButton
+                    implicitWidth: 80
+                    implicitHeight: 80
+                    flat: true
+
+                    required property string modelData
+                    required property int index
+
+                    text: modelData
+                    font.family: "Noto Color Emoji [GOOG]"
+                    font.pixelSize: 50
+
+                    onClicked: repeater.selectedIndex = index
+
+                    background: Rectangle {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.alignment: Qt.AlignCenter
+
+                        radius: parent.radius
+
+                        property bool selected: repeater.selectedIndex === parent.index
+
+                        color: selected
+                            ? Material.accent
+                            : (parent.hovered ? Material.accent : "transparent")
+
+                        opacity: parent.hovered && !selected ? 0.5 : selected ? 1.0 : 0.0
+
+                        Behavior on color { ColorAnimation { duration: 200 } }
+                        Behavior on opacity { NumberAnimation { duration: 200 } }
+                    }
+                }
+            }
+        }
+
         TextArea {
             id: descriptionField
 
@@ -69,8 +129,6 @@ ColumnLayout {
 
             text: "Сохранить"
             font.pixelSize: 18
-
-            //radius: 8
 
             onClicked: Navigation.pop()
         }
