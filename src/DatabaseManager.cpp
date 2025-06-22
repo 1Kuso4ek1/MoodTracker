@@ -50,6 +50,17 @@ void DatabaseManager::addEntry(const QString& emoji, const QString& note)
         qCritical() << "Failed to add entry: " << query.lastError();
 }
 
+void DatabaseManager::editEntry(uint32_t id, const QString& emoji, const QString& note)
+{
+    auto query = "UPDATE entries SET emoji = ?, note = ? WHERE id = ?"_sql;
+    query.addBindValue(emoji);
+    query.addBindValue(note);
+    query.addBindValue(id);
+
+    if(!query.exec())
+        qCritical() << "Failed to edit entry: " << query.lastError();
+}
+
 QVariantList DatabaseManager::getEntries()
 {
     QVariantList entries;
@@ -58,14 +69,35 @@ QVariantList DatabaseManager::getEntries()
     while(query.next())
     {
         QVariantMap item;
+        item["entryId"] = query.value(0).toString();
         item["emoji"] = query.value(1).toString();
         item["note"] = query.value(2).toString();
-        item["date"] = DateFormatter::format(query.value(3).toDateTime());
+        item["date"] = DateFormatter::format(query.value(3).toDateTime()).toUpper();
 
         entries.append(item);
     }
 
     return entries;
+}
+
+QVariantMap DatabaseManager::getEntryById(const uint32_t id)
+{
+    QVariantMap item;
+
+    auto query = "SELECT * FROM entries WHERE id = ?"_sql;
+    query.addBindValue(id);
+    query.exec();
+
+    if(query.next())
+    {
+        item["entryId"] = query.value(0).toString();
+        item["emoji"] = query.value(1).toString();
+        item["note"] = query.value(2).toString();
+    }
+    else
+        qCritical() << "Failed to get entry: " << query.lastError();
+
+    return item;
 }
 
 void DatabaseManager::createTables()

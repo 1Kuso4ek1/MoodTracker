@@ -9,9 +9,27 @@ ColumnLayout {
     id: root
     spacing: 0
 
+    property int entryId: 0
     required property Item homePage
 
     Layout.fillHeight: true
+
+    function loadData() {
+        const data = DatabaseManager.getEntryById(entryId)
+        if(data) {
+            repeater.selectedIndex = repeater.model.indexOf(data.emoji)
+            noteField.text = data.note
+        }
+    }
+
+    Component.onCompleted: {
+        if(entryId > 0) {
+            loadData()
+            headerLabel.text = "Редактирование записи"
+        }
+        else
+            headerLabel.text = "Добавить запись"
+    }
 
     ToolBar {
         Layout.fillWidth: true
@@ -39,6 +57,7 @@ ColumnLayout {
             }
 
             Label {
+                id: headerLabel
                 text: "Добавить запись"
 
                 font.pixelSize: 18
@@ -70,21 +89,27 @@ ColumnLayout {
         }
 
         RowLayout {
+            id: rowLayout
+
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignHCenter
 
-            spacing: 15
+            spacing: 5
 
             Repeater {
                 id: repeater
-                model: [ "😀", "😐", "😕", "😞", "😠" ]
+
                 property var selectedIndex: 2
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
+
+                model: [ "😀", "😐", "😕", "😞", "😠" ]
 
                 RoundButton {
                     id: emojiButton
-                    implicitWidth: 80
-                    implicitHeight: 80
+
                     flat: true
 
                     required property string modelData
@@ -92,7 +117,9 @@ ColumnLayout {
 
                     text: modelData
                     font.family: "Noto Color Emoji [GOOG]"
-                    font.pixelSize: 50
+                    font.pixelSize: 35
+
+                    Layout.alignment: Qt.AlignHCenter
 
                     onClicked: repeater.selectedIndex = index
 
@@ -125,6 +152,8 @@ ColumnLayout {
             Layout.fillHeight: true
             Layout.preferredHeight: 100
 
+            wrapMode: Text.Wrap
+
             placeholderText: "Как прошел ваш день?"
         }
 
@@ -135,7 +164,10 @@ ColumnLayout {
             font.pixelSize: 18
 
             onClicked: {
-                DatabaseManager.addEntry(repeater.model[repeater.selectedIndex], noteField.text)
+                if(entryId > 0)
+                    DatabaseManager.editEntry(entryId, repeater.model[repeater.selectedIndex], noteField.text)
+                else
+                    DatabaseManager.addEntry(repeater.model[repeater.selectedIndex], noteField.text)
                 homePage.refresh()
                 Navigation.pop()
             }

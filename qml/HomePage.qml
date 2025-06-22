@@ -38,20 +38,6 @@ ColumnLayout {
         }
     }
 
-    ListModel {
-        id: listModel
-
-        /*ListElement { emoji: "🤩"; note: "Сходил на живой концерт любимой группы — адреналина и счастья хватит надолго"; date: "Сегодня" }
-        ListElement { emoji: "😄"; note: "Встретился с друзьями в кафе, болтал и смеялся до упаду"; date: "Вчера" }
-        ListElement { emoji: "🙂"; note: "Спокойно поработал дома, привёл в порядок рабочую почту и документы"; date: "2 дня назад" }
-        ListElement { emoji: "😐"; note: "Целый день занимался рутинной отчётностью в офисе без особых эмоций"; date: "3 дня назад" }
-        ListElement { emoji: "😕"; note: "Потерял ключи и провёл пару часов в поисках, так и не найдя их"; date: "4 дня назад" }
-        ListElement { emoji: "🙁"; note: "Отменили долгожданную встречу, планы рухнули"; date: "5 дней назад" }
-        ListElement { emoji: "😠"; note: "Спорил с интернет-провайдером из-за постоянных сбоев связи"; date: "6 дней назад" }
-        ListElement { emoji: "😫"; note: "Дорабатывал срочный проект до поздней ночи, едва держась на ногах"; date: "7 дней назад" }
-        ListElement { emoji: "😭"; note: "Отвёз питомца к ветеринару на тяжёлую процедуру и очень переживал"; date: "8 дней назад" }*/
-    }
-
     signal refresh()
 
     function loadEntries() {
@@ -74,51 +60,79 @@ ColumnLayout {
         displayMarginBeginning: 100
         displayMarginEnd: 160
 
-        Component.onCompleted: refresh.connect(loadEntries)
+        Component.onCompleted: parent.refresh.connect(parent.loadEntries)
 
         model: DatabaseManager.getEntries()
-        delegate: RowLayout {
-            id: rowLayout
+        delegate: Rectangle {
+            id: delegateItem
 
+            required property string entryId
             required property string emoji
             required property string note
             required property string date
 
-            spacing: 15
-            width: parent.width - 50
+            width: listView.width - 50
+            height: rowLayout.implicitHeight
 
-            Label {
-                Layout.alignment: Qt.AlignVCenter
+            color: "transparent"
 
-                text: rowLayout.emoji
-                font.pixelSize: 50
+            MouseArea {
+                anchors.fill: parent
 
-                font.family: "Noto Color Emoji [GOOG]"
-            }
-
-            ColumnLayout {
-                Layout.fillWidth: true
-
-                Label {
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.fillWidth: true
-
-                    text: rowLayout.date
-                    font.pixelSize: 12
-
-                    color: Material.foreground
+                onClicked: {
+                    Navigation.push("NewEntry.qml", { homePage: root, entryId: entryId });
                 }
 
+                onPressAndHold: contextMenu.popup()
+            }
+
+            Menu {
+                id: contextMenu
+                MenuItem { text: "Удалить" }
+            }
+
+            RowLayout {
+                id: rowLayout
+                anchors.fill: parent
+
+                spacing: 15
+
                 Label {
+                    id: emojiLabel
+
                     Layout.alignment: Qt.AlignVCenter
+
+                    text: delegateItem.emoji
+
+                    font.pixelSize: 50
+                    font.family: "Noto Color Emoji [GOOG]"
+                }
+
+                ColumnLayout {
                     Layout.fillWidth: true
 
-                    text: rowLayout.note
-                    font.pixelSize: 18
-                    wrapMode: Text.Wrap
-                    maximumLineCount: 2
+                    spacing: 5
 
-                    elide: Text.ElideRight
+                    Label {
+                        Layout.fillWidth: true
+
+                        text: delegateItem.date
+
+                        font.pixelSize: 12
+                        color: Material.foreground
+                    }
+
+                    Label {
+                        Layout.fillWidth: true
+
+                        text: delegateItem.note
+
+                        font.pixelSize: 18
+
+                        wrapMode: Text.Wrap
+                        maximumLineCount: 2
+                        elide: Text.ElideRight
+                    }
                 }
             }
         }
