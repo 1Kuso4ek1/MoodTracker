@@ -91,10 +91,24 @@ ColumnLayout {
                 MenuItem {
                     text: "Удалить"
 
-                    onClicked: {
-                        DatabaseManager.deleteEntry(delegateItem.entryId)
-                        root.refresh()
-                    }
+                    onClicked: deleteDialog.open()
+                }
+            }
+
+            Dialog {
+                id: deleteDialog
+                title: "Удаление"
+                standardButtons: Dialog.Yes | Dialog.No
+
+                anchors.centerIn: Overlay.overlay
+
+                Label {
+                    text: "Вы действительно хотите удалить запись?"
+                }
+
+                onAccepted: {
+                    DatabaseManager.deleteEntry(delegateItem.entryId)
+                    root.refresh()
                 }
             }
 

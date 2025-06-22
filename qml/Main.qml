@@ -20,4 +20,18 @@ ApplicationWindow {
 
         Component.onCompleted: Navigation.stackView = stackView
     }
+
+    Item {
+        id: backHandler
+        visible: false
+
+        Keys.onBackPressed: {
+            if(stackView.depth > 1)
+                stackView.pop();
+            else
+                Qt.quit();
+        }
+
+        Component.onCompleted: forceActiveFocus()
+    }
 }
