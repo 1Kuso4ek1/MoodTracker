@@ -4,6 +4,8 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 import QtQuick.Effects
 
+import DatabaseManager
+
 ColumnLayout {
     id: root
     spacing: 0
@@ -39,15 +41,21 @@ ColumnLayout {
     ListModel {
         id: listModel
 
-        ListElement { emoji: "🤩"; note: "Сходил на живой концерт любимой группы — адреналина и счастья хватит надолго" }
-        ListElement { emoji: "😄"; note: "Встретился с друзьями в кафе, болтал и смеялся до упаду" }
-        ListElement { emoji: "🙂"; note: "Спокойно поработал дома, привёл в порядок рабочую почту и документы" }
-        ListElement { emoji: "😐"; note: "Целый день занимался рутинной отчётностью в офисе без особых эмоций" }
-        ListElement { emoji: "😕"; note: "Потерял ключи и провёл пару часов в поисках, так и не найдя их" }
-        ListElement { emoji: "🙁"; note: "Отменили долгожданную встречу, планы рухнули" }
-        ListElement { emoji: "😠"; note: "Спорил с интернет-провайдером из-за постоянных сбоев связи" }
-        ListElement { emoji: "😫"; note: "Дорабатывал срочный проект до поздней ночи, едва держась на ногах" }
-        ListElement { emoji: "😭"; note: "Отвёз питомца к ветеринару на тяжёлую процедуру и очень переживал" }
+        /*ListElement { emoji: "🤩"; note: "Сходил на живой концерт любимой группы — адреналина и счастья хватит надолго"; date: "Сегодня" }
+        ListElement { emoji: "😄"; note: "Встретился с друзьями в кафе, болтал и смеялся до упаду"; date: "Вчера" }
+        ListElement { emoji: "🙂"; note: "Спокойно поработал дома, привёл в порядок рабочую почту и документы"; date: "2 дня назад" }
+        ListElement { emoji: "😐"; note: "Целый день занимался рутинной отчётностью в офисе без особых эмоций"; date: "3 дня назад" }
+        ListElement { emoji: "😕"; note: "Потерял ключи и провёл пару часов в поисках, так и не найдя их"; date: "4 дня назад" }
+        ListElement { emoji: "🙁"; note: "Отменили долгожданную встречу, планы рухнули"; date: "5 дней назад" }
+        ListElement { emoji: "😠"; note: "Спорил с интернет-провайдером из-за постоянных сбоев связи"; date: "6 дней назад" }
+        ListElement { emoji: "😫"; note: "Дорабатывал срочный проект до поздней ночи, едва держась на ногах"; date: "7 дней назад" }
+        ListElement { emoji: "😭"; note: "Отвёз питомца к ветеринару на тяжёлую процедуру и очень переживал"; date: "8 дней назад" }*/
+    }
+
+    signal refresh()
+
+    function loadEntries() {
+        listView.model = DatabaseManager.getEntries();
     }
 
     ListView {
@@ -60,16 +68,21 @@ ColumnLayout {
         Layout.bottomMargin: 0
         Layout.alignment: Qt.AlignCenter
 
-        spacing: 10
+        spacing: 30
 
         cacheBuffer: 1000
         displayMarginBeginning: 100
         displayMarginEnd: 160
 
-        model: listModel
+        Component.onCompleted: refresh.connect(loadEntries)
+
+        model: DatabaseManager.getEntries()
         delegate: RowLayout {
+            id: rowLayout
+
             required property string emoji
             required property string note
+            required property string date
 
             spacing: 15
             width: parent.width - 50
@@ -77,22 +90,36 @@ ColumnLayout {
             Label {
                 Layout.alignment: Qt.AlignVCenter
 
-                text: parent.emoji
-                font.pixelSize: 28
+                text: rowLayout.emoji
+                font.pixelSize: 50
 
                 font.family: "Noto Color Emoji [GOOG]"
             }
 
-            Label {
-                Layout.alignment: Qt.AlignVCenter
+            ColumnLayout {
                 Layout.fillWidth: true
 
-                text: parent.note
-                font.pixelSize: 18
-                wrapMode: Text.Wrap
-                maximumLineCount: 2
+                Label {
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.fillWidth: true
 
-                elide: Text.ElideRight
+                    text: rowLayout.date
+                    font.pixelSize: 12
+
+                    color: Material.foreground
+                }
+
+                Label {
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.fillWidth: true
+
+                    text: rowLayout.note
+                    font.pixelSize: 18
+                    wrapMode: Text.Wrap
+                    maximumLineCount: 2
+
+                    elide: Text.ElideRight
+                }
             }
         }
     }
@@ -116,7 +143,9 @@ ColumnLayout {
             width: 80
             height: 80
 
-            onClicked: Navigation.push("NewEntry.qml")
+            onClicked: {
+                Navigation.push("NewEntry.qml", { homePage: root });
+            }
         }
     }
 }

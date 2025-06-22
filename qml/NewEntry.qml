@@ -3,9 +3,13 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
+import DatabaseManager
+
 ColumnLayout {
     id: root
     spacing: 0
+
+    required property Item homePage
 
     Layout.fillHeight: true
 
@@ -25,8 +29,8 @@ ColumnLayout {
                 font.bold: true
                 flat: true
 
-                width: 60
-                height: 60
+                width: 50
+                height: 50
 
                 onClicked: Navigation.pop()
 
@@ -59,7 +63,7 @@ ColumnLayout {
             text: "Как ваше настроение?"
 
             font.pixelSize: 24
-            font.weight: 10
+            font.weight: 300
 
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
@@ -115,7 +119,7 @@ ColumnLayout {
         }
 
         TextArea {
-            id: descriptionField
+            id: noteField
 
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -130,7 +134,11 @@ ColumnLayout {
             text: "Сохранить"
             font.pixelSize: 18
 
-            onClicked: Navigation.pop()
+            onClicked: {
+                DatabaseManager.addEntry(repeater.model[repeater.selectedIndex], noteField.text)
+                homePage.refresh()
+                Navigation.pop()
+            }
         }
     }
 }

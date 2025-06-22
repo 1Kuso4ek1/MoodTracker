@@ -2,15 +2,22 @@ cmake_minimum_required(VERSION 3.16)
 
 project(QmlApp VERSION 0.1 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Quick Core Sql)
 
 qt_standard_project_setup(REQUIRES 6.9)
 
 qt_add_executable(appQmlApp
     src/main.cpp
+        src/DatabaseManager.cpp
+        include/DatabaseManager.hpp
+        src/DateFormatter.cpp
+        include/DateFormatter.hpp
 )
+
+target_include_directories(appQmlApp PRIVATE include)
 
 set_source_files_properties(qml/Navigation.qml
     PROPERTIES
@@ -38,7 +45,7 @@ set_target_properties(appQmlApp PROPERTIES
 )
 
 target_link_libraries(appQmlApp
-    PRIVATE Qt6::Quick
+    PRIVATE Qt6::Quick Qt6::Sql
 )
 
 include(GNUInstallDirs)

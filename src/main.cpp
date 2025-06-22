@@ -1,10 +1,13 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QFontDatabase>
+
+#include "DatabaseManager.hpp"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    const QGuiApplication app(argc, argv);
+
+    qmlRegisterSingletonType<DatabaseManager>("DatabaseManager", 1, 0, "DatabaseManager", DatabaseManager::instance);
 
     QQmlApplicationEngine engine;
     QObject::connect(
