@@ -50,7 +50,7 @@ void DatabaseManager::addEntry(const QString& emoji, const QString& note)
         qCritical() << "Failed to add entry: " << query.lastError();
 }
 
-void DatabaseManager::editEntry(uint32_t id, const QString& emoji, const QString& note)
+void DatabaseManager::editEntry(const uint32_t id, const QString& emoji, const QString& note)
 {
     auto query = "UPDATE entries SET emoji = ?, note = ? WHERE id = ?"_sql;
     query.addBindValue(emoji);
@@ -59,6 +59,15 @@ void DatabaseManager::editEntry(uint32_t id, const QString& emoji, const QString
 
     if(!query.exec())
         qCritical() << "Failed to edit entry: " << query.lastError();
+}
+
+void DatabaseManager::deleteEntry(const uint32_t id)
+{
+    auto query = "DELETE FROM entries WHERE id = ?"_sql;
+    query.addBindValue(id);
+
+    if(!query.exec())
+        qCritical() << "Failed to delete entry: " << query.lastError();
 }
 
 QVariantList DatabaseManager::getEntries()

@@ -88,7 +88,14 @@ ColumnLayout {
 
             Menu {
                 id: contextMenu
-                MenuItem { text: "Удалить" }
+                MenuItem {
+                    text: "Удалить"
+
+                    onClicked: {
+                        DatabaseManager.deleteEntry(delegateItem.entryId)
+                        root.refresh()
+                    }
+                }
             }
 
             RowLayout {
