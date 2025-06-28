@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Effects
 
 import DatabaseManager
+import Notification
 
 ColumnLayout {
     id: root
@@ -157,6 +158,19 @@ ColumnLayout {
                 }
             }
         }
+    }
+
+    Notification {
+        id: test
+        icon: ":/resources/ptitsa.png"
+        appName: "Mood tracker"
+        title: "Напоминание"
+        message: "Не забудь добавить сегодня запись!"
+    }
+
+    Timer {
+        interval: 10000; running: true; repeat: true
+        onTriggered: test.send()
     }
 
     Item {
