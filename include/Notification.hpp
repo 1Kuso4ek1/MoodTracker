@@ -14,7 +14,7 @@ class Notification : public QObject
     Q_PROPERTY(QVariantMap hints MEMBER hints NOTIFY hintsChanged)
     Q_PROPERTY(int timeout MEMBER timeout NOTIFY timeoutChanged)
 public:
-    explicit Notification(QObject* parent = nullptr) : QObject(parent) {};
+    explicit Notification(QObject* parent = nullptr);
 
     Q_INVOKABLE void send() const;
 

@@ -14,7 +14,23 @@
 #include <QJniObject>
 #include <jni.h>
 #include <QtCore/private/qandroidextras_p.h>
+
+using namespace Qt::StringLiterals;
 #endif
+
+Notification::Notification(QObject* parent)
+    : QObject(parent)
+{
+#ifdef Q_OS_ANDROID
+    if(QNativeInterface::QAndroidApplication::sdkVersion() >= 33)
+    {
+        const auto requestResult = QtAndroidPrivate::requestPermission("android.permission.POST_NOTIFICATIONS"_L1);
+
+        if(requestResult.result() != QtAndroidPrivate::Authorized)
+            qWarning() << "Failed to acquire permission to post notifications (required for Android 13+)";
+    }
+#endif
+}
 
 void Notification::send() const
 {
@@ -46,6 +62,7 @@ void Notification::send() const
     if(reply.error().isValid())
         qDebug() << reply.error();
 #elifdef Q_OS_ANDROID
+    // TODO: Move this entire thing to a separate Java file
     static const QJniObject activity = QNativeInterface::QAndroidApplication::context();
 
     static const auto channelId = QJniObject::fromString(qApp->applicationName());
